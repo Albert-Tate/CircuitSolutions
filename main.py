@@ -1,6 +1,76 @@
 #!/usr/bin/env python
 import sys
 
+class CircuitSolver:
+
+	def __init__(self):
+		#nodeNames is array of strings of node names read from file
+		self.nodeNames = []
+		self.nCount = 0
+
+		#vNames, iNames, rNames strings of comp names as in netlist
+		self.vNames = []
+		self.iNames = []
+		self.rNames = []
+		
+		#vList, iList and rList item index correlates to relevant xNames
+		#[fromNodeindex, toNodeindex, value] for each entry
+		self.vList = []
+		self.iList = []
+		self.rList = []
+
+	def __parse_line(self, line, component):
+
+		temp = line.split();
+		if len(temp) != 4:
+			print "Length of line too long, aborting\n"
+			sys.exit()
+		if temp[1] in self.nodeNames:
+			start = self.nodeNames.index(temp[1])
+		else:
+			self.nodeNames.append(temp[1])
+			start = self.nCount 
+			self.nCount += 1
+		if temp[2] in self.nodeNames:
+			end = self.nodeNames.index(temp[2])
+		else:
+			self.nodeNames.append(temp[2])
+			end = self.nCount
+			self.nCount += 1
+
+		if component == 'R':	
+			self.rNames.append(temp[0]);
+			self.rList.append([start, end, int(temp[3])])
+		elif component == 'V':
+			self.vNames.append(temp[0]);
+			self.vList.append([start, end, int(temp[3])])
+		elif component == 'I':
+			self.iNames.append(temp[0]);
+			self.iList.append([start, end, int(temp[3])])
+
+	def read_file(self, filename):
+		f = open(filename, 'r')
+		for line in f:
+			if line[0] == 'R':
+				self.__parse_line(line, 'R');
+			elif line[0] == 'V':
+				self.__parse_line(line, 'V');	
+			elif line[0] == 'I':
+				self.__parse_line(line, 'I');
+			else:
+				print "IGNORED:\n\t", line
+
+new = CircuitSolver()
+
+new.read_file('spiceneteg.net')
+
+print new.nodeNames
+print new.vNames
+print new.rNames
+print new.rList
+print new.vList
+	
+"""
 #Globals. Complain about it, see if I care
 nodeNames = [] #Text repr of nodes, voltages etc in these vars
 vsNames = []
@@ -63,7 +133,7 @@ def parse_netfile(fhandle):
 	else:
 		print "IGNORED:\n\t", line
 
-
+"""
 """
 * C:\Program Files (x86)\LTC\LTspiceIV\Draft1.asc
 V1 N001 N004 4
@@ -74,7 +144,7 @@ R4 N003 N004 80
 .backanno
 .end
 """
-
+"""
 #Open File
 f = open('spiceneteg.net', 'r');
 parse_netfile(f)
@@ -152,4 +222,4 @@ for ind,node in enumerate(nodeNames):
 #Use Currents to solve for powers
 #Check sum = 0
 
-
+"""

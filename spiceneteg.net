@@ -1,8 +1,8 @@
 * C:\Program Files (x86)\LTC\LTspiceIV\Draft1.asc
-V1 N001 N004 4
-R1 N001 N002 100
-R2 N002 N003 150
-R3 N002 N004 250
-R4 N003 N004 80
+V1 Va 0 4
+R1 Va Vb 100
+R2 Vb Vc 150
+R3 Vb 0 250
+R4 Vc 0 80
 .backanno
 .end
